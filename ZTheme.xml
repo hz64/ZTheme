@@ -1,0 +1,2172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+<head>
+  <meta charset='utf-8'/>
+  <meta content='width=device-width, initial-scale=1' name='viewport'/>
+
+  <!-- 标题标签 -->
+  <title>
+    <b:if cond='data:blog.pageType == &quot;index&quot;'>
+       <b:if cond='data:blog.searchQuery'>
+          搜索结果&#65306;&quot;<data:blog.searchQuery/>&quot; - <data:blog.title/>
+       <b:elseif cond='data:blog.pageTitle != data:blog.title and data:blog.pageTitle != &quot;&quot;'/>
+          <data:blog.pageTitle/> - <data:blog.title/>
+       <b:else/>
+          <data:blog.title/>
+       </b:if>
+    <b:elseif cond='data:blog.pageType == &quot;error_page&quot;'/>
+       页面未找到 - <data:blog.title/>
+    <b:else/>
+       <data:blog.pageTitle/>
+    </b:if>
+  </title>
+
+  <!-- 元描述 -->
+  <b:if cond='data:blog.metaDescription != &quot;&quot;'>
+    <meta expr:content='data:blog.metaDescription' name='description'/>
+  </b:if>
+
+  <!-- CDN 预连接 -->
+  <link rel='preconnect' href='https://cdn.jsdelivr.net'/>
+  <link rel='dns-prefetch' href='https://cdn.jsdelivr.net'/>
+
+  <!-- Bootstrap 5 CSS CDN -->
+  <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css' rel='stylesheet'/>
+
+  <!-- 核心Blogspot头部元素 -->
+  <b:include data='blog' name='all-head-content'/>
+
+  <!-- Open Graph 标签 -->
+  <meta expr:content='data:blog.pageTitle != &quot;&quot; ? data:blog.pageTitle : data:blog.title' property='og:title'/>
+  <meta expr:content='data:blog.pageType == &quot;item&quot; ? &quot;article&quot; : &quot;website&quot;' property='og:type'/>
+  <meta expr:content='data:blog.canonicalUrl' property='og:url'/>
+  <meta expr:content='data:blog.title' property='og:site_name'/>
+  <b:if cond='data:blog.metaDescription != &quot;&quot;'>
+    <meta expr:content='data:blog.metaDescription' property='og:description'/>
+  </b:if>
+  <b:if cond='data:blog.pageType == &quot;item&quot;'>
+    <b:loop values='data:posts' var='post'>
+      <b:if cond='data:post.firstImageUrl'>
+        <meta expr:content='data:post.firstImageUrl' property='og:image'/>
+      </b:if>
+      <meta expr:content='data:post.timestampISO8601' property='article:published_time'/>
+      <b:loop values='data:post.labels' var='label'>
+        <meta expr:content='data:label.name' property='article:tag'/>
+      </b:loop>
+    </b:loop>
+  </b:if>
+
+  <!-- Twitter Card 标签 -->
+  <meta content='summary_large_image' name='twitter:card'/>
+  <meta expr:content='data:blog.pageTitle != &quot;&quot; ? data:blog.pageTitle : data:blog.title' name='twitter:title'/>
+  <b:if cond='data:blog.metaDescription != &quot;&quot;'>
+    <meta expr:content='data:blog.metaDescription' name='twitter:description'/>
+  </b:if>
+  <b:if cond='data:blog.pageType == &quot;item&quot;'>
+    <b:loop values='data:posts' var='post'>
+      <b:if cond='data:post.firstImageUrl'>
+        <meta expr:content='data:post.firstImageUrl' name='twitter:image'/>
+      </b:if>
+    </b:loop>
+  </b:if>
+
+  <!-- RSS 自动发现 -->
+  <link expr:href='data:blog.homepageUrl + &quot;feeds/posts/default&quot;' rel='alternate' title='RSS Feed' type='application/rss+xml'/>
+
+  <!-- SEO: robots -->
+  <b:if cond='data:blog.searchQuery'>
+    <meta content='noindex,follow' name='robots'/>
+  <b:elseif cond='data:blog.pageType == &quot;archive&quot;'/>
+    <meta content='noindex,follow' name='robots'/>
+  <b:elseif cond='data:blog.pageType == &quot;error_page&quot;'/>
+    <meta content='noindex,follow' name='robots'/>
+  </b:if>
+
+  <!-- Sitemap 自动发现 -->
+  <link expr:href='data:blog.homepageUrl + &quot;sitemap.xml&quot;' rel='sitemap' title='Sitemap' type='application/xml'/>
+  <link expr:href='data:blog.homepageUrl + &quot;feeds/posts/default?orderby=updated&quot;' rel='alternate' title='ATOM Feed' type='application/atom+xml'/>
+
+  <!-- DNS 预解析：常用外链域名 -->
+  <link rel='dns-prefetch' href='https://resources.blogblog.com'/>
+  <link rel='dns-prefetch' href='https://www.blogger.com'/>
+  <link rel='dns-prefetch' href='https://www.googleapis.com'/>
+
+  <!-- PWA: Web App Manifest（添加到主屏幕，无需 Service Worker） -->
+  <link expr:href='data:blog.homepageUrl + &quot;manifest.json&quot;' rel='manifest'/>
+  <meta content='yes' name='apple-mobile-web-app-capable'/>
+  <meta content='default' name='apple-mobile-web-app-status-bar-style'/>
+  <meta expr:content='data:blog.title' name='apple-mobile-web-app-title'/>
+
+  <!-- CSS样式 -->
+    <b:skin><![CDATA[
+/* ===== 基础 ===== */
+html {scroll-behavior:smooth;}
+body {
+  background:#ffffff; color:#333333; touch-action:manipulation;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  margin:0; padding:0;
+}
+body:not(#layout) .neo-hidden {display:none !important;}
+a {color:#000000;}
+a:hover {text-decoration:underline;}
+h1,h2,h3,h4,h5,h6 {color:#000000;}
+
+/* ===== 内容区宽度 ===== */
+.neo-content-wrapper {max-width:1200px; margin:0 auto; padding:0 1.5rem;}
+@media (max-width:768px) {.neo-content-wrapper {padding:0 1.2rem;}}
+
+/* ===== 表格滚动 ===== */
+.neo-table-wrapper {
+  overflow-x:auto; width:100%; margin:1em 0;
+  -webkit-overflow-scrolling:touch; touch-action:pan-x pinch-zoom;
+  overscroll-behavior:contain;
+}
+.neo-data-table {font-size:10px; border:1px solid #e0e0e0; border-collapse:collapse;}
+.neo-data-table th,.neo-data-table td {border:1px solid #ccc; padding:2px 4px; text-align:left; vertical-align:top; white-space:nowrap;}
+.neo-data-table ul {margin:0; padding:0; list-style:none;}
+.neo-data-table li {display:inline-block; margin-right:4px;}
+
+/* ===== 头部 ===== */
+.neo-site-header {
+  background:#ffffff; padding:1.5rem 0 0; margin-bottom:0;
+  border-bottom:1px solid #e0e0e0;
+  position:sticky; top:0; z-index:1000;
+  transition:transform .3s ease;
+}
+.neo-site-header.neo-header-hidden {transform:translateY(-100%);}
+.neo-site-header .neo-site-title h1 a {color:#000000 !important; text-decoration:none; font-size:2rem; font-weight:bold;}
+@media (max-width:768px) {
+  .neo-site-header {padding:1rem 0 0;}
+  .neo-site-header .neo-site-title h1 a {font-size:1.5rem;}
+}
+
+/* 导航菜单 */
+.neo-nav {display:flex; justify-content:center; flex-wrap:wrap; gap:.5rem; padding:.8rem 0;}
+.neo-nav a,.neo-nav .neo-search-toggle {color:#333333; text-decoration:none; padding:.3rem .8rem; border-radius:4px; font-size:.9rem; cursor:pointer; border:none; background:none;}
+.neo-nav a:hover,.neo-nav .neo-search-toggle:hover {background:#f5f5f5; color:#000000;}
+.neo-nav a.active {background:#000000; color:#ffffff;}
+@media (max-width:768px) {
+  .neo-nav {gap:.3rem; padding:.5rem 0;}
+  .neo-nav a,.neo-nav .neo-search-toggle {padding:.25rem .6rem; font-size:.8rem;}
+}
+
+/* 搜索框 */
+.neo-search-form {display:none; text-align:center; padding:0 1rem 1rem;}
+.neo-search-form.show {display:block;}
+.neo-search-form input {max-width:400px; width:100%; padding:.5rem 1rem; border:1px solid #e0e0e0; border-radius:20px; background:#ffffff; color:#333333; outline:none;}
+.neo-search-form input:focus {border-color:#000000;}
+
+/* ===== 页脚 ===== */
+.neo-site-footer {background:#ffffff; padding:2rem 0; margin-top:3rem; text-align:center; color:#999999; border-top:1px solid #e0e0e0;}
+@media (max-width:768px) {.neo-site-footer {padding:1.5rem 0; margin-top:2rem; font-size:.85rem;}}
+
+/* ===== 首页+归档页 卡片列表 ===== */
+.neo-card-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));
+  gap:1.5rem;
+}
+.post-card {height:100%; border:1px solid #e0e0e0; background:#ffffff; border-radius:8px; overflow:hidden; transition:box-shadow .2s;}
+.post-card:hover {box-shadow:0 4px 16px rgba(0,0,0,.08);}
+.post-card .card-img-top {height:160px; object-fit:cover;}
+.post-card .card-body {padding:1rem;}
+.post-card .card-title {font-size:1.05rem;}
+.post-card .card-title a {color:#000000; text-decoration:none;}
+.post-card .card-title a:hover {text-decoration:underline;}
+.post-card .card-text {color:#333333; font-size:.85rem; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;}
+@media (max-width:640px) {
+  .neo-card-grid {grid-template-columns:1fr; gap:1rem;}
+  .post-card .card-title {font-size:1rem;}
+  .post-card .card-text {font-size:.85rem;}
+}
+
+/* ===== 文章目录 TOC ===== */
+.neo-toc {background:#f8f9fa; border:1px solid #e0e0e0; border-radius:8px; padding:1rem 1.2rem; margin-bottom:1.5rem; font-size:.9rem;}
+.neo-toc-title {font-weight:bold; margin-bottom:.6rem; font-size:.95rem; cursor:pointer; user-select:none; display:flex; justify-content:space-between; align-items:center;}
+.neo-toc-title::after {content:'\25BC'; font-size:.7rem; transition:transform .2s;}
+.neo-toc.collapsed .neo-toc-title::after {transform:rotate(-90deg);}
+.neo-toc-list {list-style:none; padding:0; margin:0;}
+.neo-toc.collapsed .neo-toc-list {display:none;}
+.neo-toc-list li {margin:3px 0;}
+.neo-toc-list a {color:#333333; text-decoration:none; display:block; padding:2px 0; border-left:2px solid transparent; padding-left:12px; transition:border-color .15s;}
+.neo-toc-list a:hover,.neo-toc-list a.active-toc {color:#000000; border-left-color:#000000;}
+.neo-toc-list .neo-toc-h3 {padding-left:28px; font-size:.85rem;}
+.neo-toc-list .neo-toc-h4 {padding-left:44px; font-size:.8rem; color:#6c757d;}
+
+/* ===== 图片灯箱 ===== */
+.neo-lightbox {display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.9); z-index:10000; cursor:zoom-out; align-items:center; justify-content:center;}
+.neo-lightbox.show {display:flex;}
+.neo-lightbox img {max-width:90vw; max-height:90vh; object-fit:contain; cursor:default;}
+.neo-lightbox-close {position:fixed; top:1rem; right:1.5rem; color:#fff; font-size:2rem; cursor:pointer; z-index:10001; line-height:1;}
+.neo-lightbox-close:hover {opacity:.7;}
+.neo-post-content img {cursor:zoom-in;}
+.neo-post-wrapper {padding:.5rem 0;}
+.neo-post-wrapper .card-title {border:none; padding:0; margin-bottom:.8rem; font-size:1.8rem;}
+.neo-post-meta {font-size:.875rem; color:#6c757d;}
+.neo-post-content {line-height:1.8; font-size:1.05rem;}
+.neo-post-content img {max-width:100%; height:auto; border-radius:6px; margin:1rem 0;}
+.neo-post-content pre {background:#f4f4f4; border-radius:6px; padding:1rem; overflow-x:auto; font-size:.9rem;}
+.neo-post-content code {background:#f4f4f4; padding:.15em .4em; border-radius:3px; font-size:.9em;}
+.neo-post-content pre code {background:none; padding:0;}
+.neo-post-content blockquote {border-left:4px solid #000000; margin:1rem 0; padding:.5rem 1rem; background:#f8f9fa; border-radius:0 6px 6px 0; color:#6c757d;}
+@media (max-width:768px) {
+  .neo-post-wrapper .card-title {font-size:1.4rem;}
+  .neo-post-meta {font-size:.8rem;}
+  .neo-post-content {font-size:1rem; line-height:1.85;}
+}
+
+/* 阅读时间 */
+.neo-reading-time {font-size:.8rem; color:#6c757d; margin-left:.5rem;}
+.neo-reading-time::before {content:"\00B7"; margin-right:.5rem;}
+
+/* ===== 静态页面 ===== */
+.neo-custom-page {padding:.5rem 0;}
+.neo-custom-page .neo-page-title {font-size:1.8rem; margin-bottom:.8rem;}
+@media (max-width:768px) {.neo-custom-page .neo-page-title {font-size:1.4rem;}}
+
+/* ===== 面包屑 ===== */
+.neo-breadcrumb {font-size:.85rem; color:#6c757d; margin-bottom:1rem;}
+.neo-breadcrumb a {color:#6c757d; text-decoration:none;}
+.neo-breadcrumb a:hover {color:#000000;}
+@media (max-width:768px) {.neo-breadcrumb {font-size:.78rem; margin-bottom:.8rem;}}
+
+/* ===== 评论区 ===== */
+.neo-comments-section {border-top:1px solid #e0e0e0; padding-top:1.5rem; margin-top:2rem;}
+.neo-load-comments-btn {min-width:140px; border-color:#000000 !important; color:#000000 !important;}
+.neo-load-comments-btn:hover {background:#000000 !important; color:#ffffff !important;}
+.neo-comments-wrapper {margin-top:1.5rem;}
+.neo-comments-wrapper .comments {padding:1rem 0;}
+.neo-comments-wrapper .comments h4 {font-size:1.1rem; margin-bottom:1rem;}
+.neo-comments-wrapper .comment-author {font-weight:600; margin-bottom:.25rem;}
+.neo-comments-wrapper .comment-body {margin-bottom:.75rem; padding-bottom:.75rem; border-bottom:1px solid #f0f0f0;}
+.neo-comments-wrapper .comment-body p {margin:0;}
+.neo-comments-wrapper .comment-footer {font-size:.8rem; color:#6c757d; margin-bottom:1.5rem;}
+.neo-comments-wrapper .comment-timestamp a {color:#6c757d; text-decoration:none;}
+.neo-comments-wrapper .comment-timestamp a:hover {text-decoration:underline;}
+.neo-comments-wrapper .comment-form {margin-top:1.5rem; padding-top:1rem; border-top:1px solid #e0e0e0;}
+.neo-comments-wrapper .comment-form iframe {width:100% !important;}
+.neo-comments-wrapper .thread-toggle {font-size:.85rem;}
+.neo-comments-wrapper .thread-toggle a {color:#333333 !important;}
+.neo-comments-wrapper .thread-chrome {padding-left:0;}
+.neo-comments-wrapper .avatar-image-container {margin-right:.5rem;}
+.neo-comments-wrapper .avatar-image-container img {border-radius:50%;}
+@media (max-width:768px) {
+  .neo-load-comments-btn {min-width:120px; font-size:.9rem;}
+  .neo-comments-wrapper .comment-body {font-size:.9rem;}
+}
+
+/* ===== 分页导航 ===== */
+.neo-pager {display:flex; justify-content:space-between; align-items:center; margin-top:2rem; padding-top:1rem; border-top:1px solid #e0e0e0;}
+.neo-pager a {color:#000000; text-decoration:none; padding:.5rem 1rem; border:1px solid #e0e0e0; border-radius:6px; font-size:.9rem;}
+.neo-pager a:hover {background:#f5f5f5;}
+.neo-pager .neo-pager-home {border:none; color:#6c757d;}
+.neo-pager .neo-pager-disabled {opacity:.4; pointer-events:none;}
+@media (max-width:768px) {
+  .neo-pager {margin-top:1.5rem; padding-top:.8rem;}
+  .neo-pager a {padding:.4rem .8rem; font-size:.8rem;}
+}
+
+/* ===== 相关文章 ===== */
+.neo-related {margin-top:2.5rem; padding-top:1.5rem; border-top:1px solid #e0e0e0;}
+.neo-related h3 {font-size:1.2rem; margin-bottom:1rem;}
+.neo-related-list {display:flex; flex-direction:column; gap:.5rem;}
+.neo-related-list a {display:flex; align-items:center; gap:.6rem; padding:.5rem; border-radius:6px; text-decoration:none; color:#333333;}
+.neo-related-list a:hover {background:#f5f5f5;}
+.neo-related-list img {width:60px; height:45px; object-fit:cover; border-radius:4px; flex-shrink:0;}
+.neo-related-list .neo-related-noimg {width:60px; height:45px; background:#f5f5f5; border-radius:4px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:.7rem; color:#6c757d;}
+.neo-related-list span {font-size:.9rem;}
+@media (max-width:768px) {
+  .neo-related {margin-top:2rem; padding-top:1rem;}
+  .neo-related h3 {font-size:1.05rem;}
+  .neo-related-list span {font-size:.8rem;}
+}
+
+/* ===== 阅读进度条 ===== */
+.neo-progress-bar {position:fixed; top:0; left:0; height:3px; background:#000000; z-index:9999; width:0; transition:width .1s linear;}
+
+/* ===== 返回顶部按钮 ===== */
+.neo-back-to-top {position:fixed; bottom:2rem; right:2rem; width:44px; height:44px; border-radius:8px; background:#000000; color:#ffffff; border:none; cursor:pointer; font-size:1.2rem; display:none; align-items:center; justify-content:center; z-index:998; box-shadow:0 2px 8px rgba(0,0,0,.15); transition:opacity .2s,transform .2s;}
+.neo-back-to-top:hover {opacity:.8; transform:translateY(-2px);}
+.neo-back-to-top.show {display:flex;}
+@media (max-width:768px) {.neo-back-to-top {bottom:1rem; right:1rem; width:38px; height:38px; font-size:1rem;}}
+
+/* ===== 通用 ===== */
+.text-muted {color:#6c757d !important;}
+.alert {background:#f8f9fa; border:1px solid #e0e0e0; color:#333333;}
+
+/* ===== 无障碍：键盘焦点 ===== */
+a:focus-visible,button:focus-visible,input:focus-visible {
+  outline:2px solid #000000; outline-offset:2px;
+}
+
+/* ===== 无障碍：减少动效 ===== */
+@media (prefers-reduced-motion:reduce) {
+  *,*::before,*::after {animation-duration:.01ms !important; transition-duration:.01ms !important; scroll-behavior:auto !important;}
+  .neo-progress-bar {transition:none !important;}
+}
+
+/* ===== 代码块复制按钮 ===== */
+.neo-code-block-wrapper {position:relative; margin:1rem 0;}
+.neo-code-block-wrapper pre {margin:0;}
+.neo-copy-btn {
+  position:absolute; top:.5rem; right:.5rem;
+  background:rgba(0,0,0,.6); color:#fff; border:none;
+  border-radius:4px; padding:.25rem .6rem; font-size:.75rem;
+  cursor:pointer; opacity:0; transition:opacity .2s;
+}
+.neo-code-block-wrapper:hover .neo-copy-btn {opacity:1;}
+.neo-copy-btn.copied {background:#28a745;}
+
+/* ===== 版权声明 ===== */
+.neo-copyright {
+  margin-top:2rem; padding:1rem 1.2rem;
+  background:#f8f9fa; border-radius:8px; border:1px solid #e0e0e0;
+  font-size:.85rem; color:#6c757d; line-height:1.8;
+}
+.neo-copyright a {color:#333333;}
+
+/* ===== 字数统计 ===== */
+.neo-word-count {font-size:.8rem; color:#6c757d;}
+.neo-word-count::before {content:"\00B7"; margin:0 .5rem;}
+
+/* ===== 加载更多按钮 ===== */
+.neo-load-more-wrap {text-align:center; margin-top:2rem;}
+.neo-load-more-btn {
+  min-width:160px; border:1px solid #000 !important; color:#000 !important;
+  background:#fff !important; padding:.6rem 1.5rem; border-radius:6px;
+  font-size:.9rem; cursor:pointer; transition:all .2s;
+}
+.neo-load-more-btn:hover {background:#000 !important; color:#fff !important;}
+.neo-load-more-btn:disabled {opacity:.5; pointer-events:none;}
+
+/* ===== 骨架屏 ===== */
+.neo-skeleton {
+  background:linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size:200% 100%; animation:neo-shimmer 1.5s infinite;
+  border-radius:4px;
+}
+@keyframes neo-shimmer {
+  0% {background-position:200% 0;}
+  100% {background-position:-200% 0;}
+}
+.neo-skeleton-card {
+  border:1px solid #e0e0e0; border-radius:8px; overflow:hidden;
+}
+.neo-skeleton-img {height:160px;}
+.neo-skeleton-body {padding:1rem;}
+.neo-skeleton-title {height:1.2rem; margin-bottom:.8rem; width:70%;}
+.neo-skeleton-line {height:.8rem; margin-bottom:.5rem;}
+.neo-skeleton-line.short {width:50%;}
+.neo-skeleton-btn {height:2rem; width:80px; margin-top:.5rem;}
+
+/* ===== 图片懒加载 ===== */
+img.neo-lazy {opacity:0; transition:opacity .3s;}
+img.neo-lazy.neo-lazy-loaded {opacity:1;}
+
+/* ===== 打印样式 ===== */
+@media print {
+  .neo-site-header,.neo-progress-bar,.neo-back-to-top,
+  .neo-comments-section,.neo-related,.neo-pager,
+  .neo-lightbox,.neo-toc,.neo-search-form,.neo-site-footer,
+  .neo-load-more-wrap,.neo-copy-btn {display:none !important;}
+  .neo-content-wrapper {max-width:100%; padding:0;}
+  .neo-post-content {font-size:12pt; line-height:1.6;}
+  .neo-post-content img {max-width:100%; page-break-inside:avoid;}
+  .neo-post-content pre,.neo-post-content blockquote {
+    border:1px solid #ccc; page-break-inside:avoid;
+  }
+  body {background:#fff; color:#000;}
+  a {color:#000; text-decoration:underline;}
+  @page {margin:2cm;}
+}
+
+/* 首页页面标题 */
+.neo-homepage-data h2,.neo-archive-data h2,.neo-index-data h2 {font-size:1.4rem;}
+@media (max-width:768px) {
+  .neo-homepage-data h2,.neo-archive-data h2,.neo-index-data h2 {font-size:1.1rem; margin-bottom:1rem !important;}
+}
+]]></b:skin>
+</head>
+<body>
+  <!-- 阅读进度条 -->
+  <div class='neo-progress-bar' id='neo-progress-bar'></div>
+
+  <!-- 图片灯箱 -->
+  <div class='neo-lightbox' id='neo-lightbox' onclick='closeLightbox()'>
+    <span class='neo-lightbox-close' onclick='closeLightbox()'>&#215;</span>
+    <img id='neo-lightbox-img' src='' alt=''/>
+  </div>
+
+  <!-- 返回顶部 -->
+  <button aria-label='返回顶部' class='neo-back-to-top' id='neo-back-to-top' onclick='window.scrollTo({top:0,behavior:&quot;smooth&quot;})' title='返回顶部'>&#8593;</button>
+
+  <!-- 网站头部 -->
+  <header class='neo-site-header'>
+    <div class='neo-site-title text-center'>
+      <h1><a expr:href='data:blog.homepageUrl'><data:blog.title/></a></h1>
+    </div>
+    <!-- 导航菜单 -->
+    <nav class='neo-nav' id='neo-nav'>
+      <a expr:href='data:blog.homepageUrl'>首页</a>
+      <b:if cond='data:blog.pageList'>
+        <b:loop values='data:blog.pageList' var='page'>
+          <a expr:href='data:page.url'><data:page.title/></a>
+        </b:loop>
+      </b:if>
+      <span class='neo-search-toggle' onclick='toggleSearch()'>&#128269; 搜索</span>
+      <a expr:href='data:blog.homepageUrl + &quot;feeds/posts/default&quot;' rel='alternate' target='_blank' title='RSS 订阅' type='application/rss+xml'>&#128276; RSS</a>
+    </nav>
+    <!-- 搜索表单 -->
+    <div class='neo-search-form' id='neo-search-form'>
+      <form expr:action='data:blog.searchUrl' method='get'>
+        <input name='q' placeholder='输入关键词搜索...' type='text'/>
+      </form>
+    </div>
+  </header>
+
+
+
+  <!-- 主要内容区域 -->
+  <main class='neo-main-content-area' id='neo-main'>
+    <b:section class='neo-main-content-section' id='neo-main-section' maxwidgets='1' name='主要内容区块' showaddelement='no'>
+        <b:widget id='Blog1' locked='true' title='博文' type='Blog' version='1'>
+          <b:widget-settings>
+            <b:widget-setting name='showDateHeader'>true</b:widget-setting>
+            <b:widget-setting name='style.textcolor'>#ffffff</b:widget-setting>
+            <b:widget-setting name='showShareButtons'>true</b:widget-setting>
+            <b:widget-setting name='authorLabel'>By</b:widget-setting>
+            <b:widget-setting name='showCommentLink'>true</b:widget-setting>
+            <b:widget-setting name='style.urlcolor'>#ffffff</b:widget-setting>
+            <b:widget-setting name='showAuthor'>false</b:widget-setting>
+            <b:widget-setting name='style.linkcolor'>#ffffff</b:widget-setting>
+            <b:widget-setting name='style.unittype'>TextAndImage</b:widget-setting>
+            <b:widget-setting name='style.bgcolor'>#ffffff</b:widget-setting>
+            <b:widget-setting name='timestampLabel'>on</b:widget-setting>
+            <b:widget-setting name='reactionsLabel'/>
+            <b:widget-setting name='showAuthorProfile'>false</b:widget-setting>
+            <b:widget-setting name='style.layout'>1x1</b:widget-setting>
+            <b:widget-setting name='showLabels'>true</b:widget-setting>
+            <b:widget-setting name='showLocation'>true</b:widget-setting>
+            <b:widget-setting name='showTimestamp'>true</b:widget-setting>
+            <b:widget-setting name='postsPerAd'>3</b:widget-setting>
+            <b:widget-setting name='showBacklinks'>false</b:widget-setting>
+            <b:widget-setting name='style.bordercolor'>#ffffff</b:widget-setting>
+            <b:widget-setting name='showInlineAds'>true</b:widget-setting>
+            <b:widget-setting name='showReactions'>false</b:widget-setting>
+          </b:widget-settings>
+          <b:includable id='main' var='top'>
+          <div class='neo-content-wrapper'>
+            <!-- 页面类型逻辑 -->
+
+            <!-- 1. 首页 -->
+            <b:if cond='data:blog.url == data:blog.homepageUrl'>
+              <div class='neo-homepage-data mb-4'>
+                <h2 class='mb-4'>最新文章</h2>
+                <b:include name='neoPostListCards'/>
+                <div class='neo-load-more-wrap' id='neo-load-more-wrap'>
+                  <button class='neo-load-more-btn' id='neo-load-more-btn' onclick='loadMorePosts()' type='button'>加载更多</button>
+                </div>
+                <b:include name='nextprev'/>
+              </div>
+
+            <!-- 2. 文章详情页 -->
+            <b:elseif cond='data:blog.pageType == &quot;item&quot;'/>
+              <b:loop values='data:posts' var='post'>
+                <!-- 面包屑导航 -->
+                <div class='neo-breadcrumb'>
+                  <a expr:href='data:blog.homepageUrl'>首页</a> &#187;
+                  <b:if cond='data:post.labels'>
+                    <b:loop values='data:post.labels' var='label' index='i'>
+                      <b:if cond='data:i == 0'>
+                        <a expr:href='data:label.url'><data:label.name/></a> &#187;
+                      </b:if>
+                    </b:loop>
+                  </b:if>
+                  <span><data:post.title/></span>
+                </div>
+
+                <article class='neo-post' itemscope='itemscope' itemtype='http://schema.org/BlogPosting'>
+                  <div class='neo-post-wrapper'>
+                    <h1 class='card-title' itemprop='headline'><data:post.title/></h1>
+                    <div class='neo-post-meta text-muted mb-3'>
+                      <span class='neo-post-timestamp'>
+                        发布于&#65306;
+                        <time expr:datetime='data:post.timestampISO8601' itemprop='datePublished'><data:post.timestamp/></time>
+                      </span>
+                      <span class='neo-reading-time' expr:id='&quot;neo-rt-&quot; + data:post.id'>约 N 分钟</span>
+                      <span class='neo-word-count' expr:id='&quot;neo-wc-&quot; + data:post.id'/>
+                      <b:if cond='data:post.labels'>
+                        <span class='neo-post-labels'> | 标签&#65306;
+                          <b:loop values='data:post.labels' var='label'>
+                            <a class='text-decoration-none' expr:href='data:label.url' itemprop='keywords' rel='tag'><data:label.name/></a><b:if cond='data:label.isLast != &quot;true&quot;'>, </b:if>
+                          </b:loop>
+                        </span>
+                      </b:if>
+                    </div>
+                    <div class='neo-post-content' expr:id='&quot;neo-post-body-&quot; + data:post.id' itemprop='articleBody'>
+                      <data:post.body/>
+                    </div>
+                    <!-- 版权声明（JS 动态注入） -->
+                    <div class='neo-copyright' expr:id='&quot;neo-copyright-&quot; + data:post.id' style='display:none;'/>
+                  </div>
+                </article>
+
+                <!-- JSON-LD 结构化数据 -->
+                <script type='application/ld+json'>
+                  {
+                    "@context": "https://schema.org",
+                    "@type": "BlogPosting",
+                    "headline": "<data:post.title/>",
+                    "description": "<b:eval expr='data:post.snippet ? data:post.snippet : data:post.title'/>",
+                    "datePublished": "<data:post.timestampISO8601/>",
+                    "dateModified": "<data:post.timestampISO8601/>",
+                    "author": {
+                      "@type": "Person",
+                      "name": "<data:post.author/>"
+                    },
+                    "url": "<data:post.url/>",
+                    <b:if cond='data:post.firstImageUrl'>
+                    "image": "<data:post.firstImageUrl/>",
+                    </b:if>
+                    "publisher": {
+                      "@type": "Organization",
+                      "name": "<data:blog.title/>"
+                    },
+                    "mainEntityOfPage": {
+                      "@type": "WebPage",
+                      "@id": "<data:post.url/>"
+                    }
+                  }
+                </script>
+
+                <!-- 文章内分页导航 -->
+                <b:include name='nextprev'/>
+
+                <!-- 评论区 - 原生渲染，默认隐藏（避免国内加载慢） -->
+                <div class='neo-comments-section'>
+                  <div class='text-center'>
+                    <button class='btn btn-outline-dark neo-load-comments-btn' onclick='toggleComments(this)' type='button'>
+                      查看评论
+                    </button>
+                  </div>
+                  <div class='neo-comments-wrapper' id='neo-comments-wrapper' style='display:none;'>
+                    <b:include data='post' name='comment_picker'/>
+                  </div>
+                </div>
+
+                <!-- 相关文章 -->
+                <b:if cond='data:post.labels'>
+                  <div class='neo-related'>
+                    <h3>相关文章</h3>
+                    <div class='neo-related-list' expr:id='&quot;neo-related-&quot; + data:post.id'>
+                      <span style='color:#6c757d;font-size:.85rem;'>加载中...</span>
+                    </div>
+                  </div>
+                </b:if>
+              </b:loop>
+
+            <!-- 3. 静态页面 -->
+            <b:elseif cond='data:blog.pageType == &quot;static_page&quot;'/>
+              <b:loop values='data:posts' var='post'>
+                <div class='neo-custom-page'>
+                  <h1 class='neo-page-title'><data:post.title/></h1>
+                  <div class='neo-post-content' expr:id='&quot;neo-post-body-&quot; + data:post.id'>
+                    <data:post.body/>
+                  </div>
+                </div>
+              </b:loop>
+
+            <!-- 4. 归档页面 -->
+            <b:elseif cond='data:blog.pageType == &quot;archive&quot;'/>
+              <div class='neo-archive-data mb-4'>
+                 <h2 class='neo-page-title mb-4'>归档&#65306;<data:blog.pageName/></h2>
+                 <b:include name='neoPostListCards'/>
+                 <div class='neo-load-more-wrap' id='neo-load-more-wrap'>
+                   <button class='neo-load-more-btn' id='neo-load-more-btn' onclick='loadMorePosts()' type='button'>加载更多</button>
+                 </div>
+                 <b:include name='nextprev'/>
+              </div>
+
+            <!-- 5. 标签页和搜索页&#65288;索引页&#65289; -->
+            <b:elseif cond='data:blog.pageType == &quot;index&quot;'/>
+              <div class='neo-index-data mb-4'>
+                <b:if cond='data:blog.searchQuery'>
+                  <h2 class='neo-page-title mb-4'>搜索结果&#65306;&quot;<data:blog.searchQuery/>&quot;</h2>
+                <b:else/> <!-- 标签页 -->
+                  <h2 class='neo-page-title mb-4'>标签&#65306;<data:blog.pageName/></h2>
+                </b:if>
+                <b:include name='neoPostListCards'/>
+                <div class='neo-load-more-wrap' id='neo-load-more-wrap'>
+                  <button class='neo-load-more-btn' id='neo-load-more-btn' onclick='loadMorePosts()' type='button'>加载更多</button>
+                </div>
+                <b:include name='nextprev'/>
+              </div>
+
+            <!-- 6. 错误页面&#65288;404&#65289; -->
+            <b:elseif cond='data:blog.pageType == &quot;error_page&quot;'/>
+               <div class='neo-error-page text-center py-5'>
+                  <div class='alert alert-warning' role='alert'>
+                    <h1 class='neo-page-title'>哎呀&#65281;页面未找到&#65288;404&#65289;</h1>
+                    <p>抱歉&#65292;您查找的内容不存在&#12290;</p>
+                  </div>
+               </div>
+
+            <!-- 7. 未知页面类型的备用方案 -->
+            <b:else/>
+               <div class='neo-unknown-page'>
+                  <h1>未知页面类型</h1>
+                  <p>此页面类型不被模板识别&#12290;</p>
+               </div>
+            </b:if>
+
+          </div> <!-- 结束.neo-content-wrapper -->
+        </b:includable>
+          <b:includable id='backlinkDeleteIcon' var='backlink'/>
+          <b:includable id='backlinks' var='post'/>
+          <b:includable id='comment-form' var='post'>
+  <div class='comment-form'>
+    <a name='comment-form'/>
+    <b:if cond='data:mobile'>
+      <h4 id='comment-post-message'>
+        <a expr:id='data:widget.instanceId + &quot;_comment-editor-toggle-link&quot;' href='javascript:void(0)'><data:postCommentMsg/></a></h4>
+      <p><data:blogCommentMessage/></p>
+      <data:blogTeamBlogMessage/>
+      <a expr:href='data:post.commentFormIframeSrc' id='comment-editor-src'/>
+      <iframe allowtransparency='true' class='blogger-iframe-colorize blogger-comment-from-post' expr:height='data:cmtIframeInitialHeight' frameborder='0' id='comment-editor' name='comment-editor' src='' style='display: none' width='100%'/>
+    <b:else/>
+      <h4 id='comment-post-message'><data:postCommentMsg/></h4>
+      <p><data:blogCommentMessage/></p>
+      <data:blogTeamBlogMessage/>
+      <a expr:href='data:post.commentFormIframeSrc' id='comment-editor-src'/>
+      <iframe allowtransparency='true' class='blogger-iframe-colorize blogger-comment-from-post' expr:height='data:cmtIframeInitialHeight' frameborder='0' id='comment-editor' name='comment-editor' src='' width='100%'/>
+    </b:if>
+    <data:post.cmtfpIframe/>
+    <script type='text/javascript'>
+      BLOG_CMT_createIframe(&#39;<data:post.appRpcRelayPath/>&#39;);
+    </script>
+  </div>
+</b:includable>
+          <b:includable id='commentDeleteIcon' var='comment'>
+  <span expr:class='&quot;item-control &quot; + data:comment.adminClass'>
+    <b:if cond='data:showCmtPopup'>
+      <div class='goog-toggle-button'>
+        <div class='goog-inline-block comment-action-icon'/>
+      </div>
+    <b:else/>
+      <a class='comment-delete' expr:href='data:comment.deleteUrl' expr:title='data:top.deleteCommentMsg'>
+        <img src='https://resources.blogblog.com/img/icon_delete13.gif'/>
+      </a>
+    </b:if>
+  </span>
+</b:includable>
+          <b:includable id='comment_count_picker' var='post'>
+  <a class='comment-link' expr:href='data:post.addCommentUrl' expr:onclick='data:post.addCommentOnclick'>
+    <data:post.commentLabelFull/>:
+  </a>
+</b:includable>
+          <b:includable id='comment_picker' var='post'>
+  <b:if cond='data:post.showThreadedComments'>
+    <b:include data='post' name='threaded_comments'/>
+  <b:else/>
+    <b:include data='post' name='comments'/>
+  </b:if>
+</b:includable>
+          <b:includable id='comments' var='post'>
+  <div class='comments' id='comments'>
+    <a name='comments'/>
+    <b:if cond='data:post.allowComments'>
+      <h4><data:post.commentLabelFull/>:</h4>
+
+      <b:if cond='data:post.commentPagingRequired'>
+        <span class='paging-control-container'>
+          <b:if cond='data:post.hasOlderLinks'>
+            <a expr:class='data:post.oldLinkClass' expr:href='data:post.oldestLinkUrl'><data:post.oldestLinkText/></a>
+              &#160;
+            <a expr:class='data:post.oldLinkClass' expr:href='data:post.olderLinkUrl'><data:post.olderLinkText/></a>
+              &#160;
+          </b:if>
+
+          <data:post.commentRangeText/>
+
+          <b:if cond='data:post.hasNewerLinks'>
+            &#160;
+            <a expr:class='data:post.newLinkClass' expr:href='data:post.newerLinkUrl'><data:post.newerLinkText/></a>
+            &#160;
+            <a expr:class='data:post.newLinkClass' expr:href='data:post.newestLinkUrl'><data:post.newestLinkText/></a>
+          </b:if>
+        </span>
+      </b:if>
+
+      <div expr:id='data:widget.instanceId + &quot;_comments-block-wrapper&quot;'>
+        <dl expr:class='data:post.avatarIndentClass' id='comments-block'>
+          <b:loop values='data:post.comments' var='comment'>
+            <dt expr:class='&quot;comment-author &quot; + data:comment.authorClass' expr:id='data:comment.anchorName'>
+              <b:if cond='data:comment.favicon'>
+                <img expr:src='data:comment.favicon' height='16px' style='margin-bottom:-2px;' width='16px'/>
+              </b:if>
+              <a expr:name='data:comment.anchorName'/>
+              <b:if cond='data:blog.enabledCommentProfileImages'>
+                <data:comment.authorAvatarImage/>
+              </b:if>
+              <b:if cond='data:comment.authorUrl'>
+                <a expr:href='data:comment.authorUrl' rel='nofollow'><data:comment.author/></a>
+              <b:else/>
+                <data:comment.author/>
+              </b:if>
+              <data:commentPostedByMsg/>
+            </dt>
+            <dd class='comment-body' expr:id='data:widget.instanceId + data:comment.cmtBodyIdPostfix'>
+              <b:if cond='data:comment.isDeleted'>
+                <span class='deleted-comment'><data:comment.body/></span>
+              <b:else/>
+                <p>
+                  <data:comment.body/>
+                </p>
+              </b:if>
+            </dd>
+            <dd class='comment-footer'>
+              <span class='comment-timestamp'>
+                <a expr:href='data:comment.url' title='comment permalink'>
+                  <data:comment.timestamp/>
+                </a>
+                <b:include data='comment' name='commentDeleteIcon'/>
+              </span>
+            </dd>
+          </b:loop>
+        </dl>
+      </div>
+
+      <b:if cond='data:post.commentPagingRequired'>
+        <span class='paging-control-container'>
+          <a expr:class='data:post.oldLinkClass' expr:href='data:post.oldestLinkUrl'>
+            <data:post.oldestLinkText/>
+          </a>
+          <a expr:class='data:post.oldLinkClass' expr:href='data:post.olderLinkUrl'>
+            <data:post.olderLinkText/>
+          </a>
+          &#160;
+          <data:post.commentRangeText/>
+          &#160;
+          <a expr:class='data:post.newLinkClass' expr:href='data:post.newerLinkUrl'>
+            <data:post.newerLinkText/>
+          </a>
+          <a expr:class='data:post.newLinkClass' expr:href='data:post.newestLinkUrl'>
+            <data:post.newestLinkText/>
+          </a>
+        </span>
+      </b:if>
+
+      <p class='comment-footer'>
+        <b:if cond='data:post.embedCommentForm'>
+          <b:if cond='data:post.allowNewComments'>
+            <b:include data='post' name='comment-form'/>
+          <b:else/>
+            <data:post.noNewCommentsText/>
+          </b:if>
+        <b:elseif cond='data:post.allowComments'/>
+          <a expr:href='data:post.addCommentUrl' expr:onclick='data:post.addCommentOnclick'><data:postCommentMsg/></a>
+        </b:if>
+      </p>
+    </b:if>
+    <b:if cond='data:showCmtPopup'>
+      <div id='comment-popup'>
+        <iframe allowtransparency='true' frameborder='0' id='comment-actions' name='comment-actions' scrolling='no'>
+        </iframe>
+      </div>
+    </b:if>
+
+  </div>
+</b:includable>
+          <b:includable id='feedLinks'>
+  <b:if cond='data:blog.pageType != &quot;item&quot;'> <!-- Blog feed links -->
+    <b:if cond='data:feedLinks'>
+      <div class='blog-feeds'>
+        <b:include data='feedLinks' name='feedLinksBody'/>
+      </div>
+    </b:if>
+
+  <b:else/> <!--Post feed links -->
+    <div class='post-feeds'>
+      <b:loop values='data:posts' var='post'>
+        <b:include cond='data:post.allowComments and data:post.feedLinks' data='post.feedLinks' name='feedLinksBody'/>
+      </b:loop>
+    </div>
+  </b:if>
+</b:includable>
+          <b:includable id='feedLinksBody' var='links'>
+  <div class='feed-links'>
+  <data:feedLinksMsg/>
+  <b:loop values='data:links' var='f'>
+     <a class='feed-link' expr:href='data:f.url' expr:type='data:f.mimeType' target='_blank'><data:f.name/> (<data:f.feedType/>)</a>
+  </b:loop>
+  </div>
+</b:includable>
+          <b:includable id='iframe_comments' var='post'>
+  <!-- G+ comments, no longer available. The includable is retained for backwards-compatibility. -->
+</b:includable>
+          <b:includable id='mobile-index-post' var='post'>
+  <div class='mobile-date-outer date-outer'>
+    <b:if cond='data:post.dateHeader'>
+      <div class='date-header'>
+        <span><data:post.dateHeader/></span>
+      </div>
+    </b:if>
+
+    <div class='mobile-post-outer'>
+      <a expr:href='data:post.url'>
+        <h3 class='mobile-index-title entry-title' itemprop='name'>
+          <data:post.title/>
+        </h3>
+
+        <div class='mobile-index-arrow'>&amp;rsaquo;</div>
+
+        <div class='mobile-index-contents'>
+          <b:if cond='data:post.thumbnailUrl'>
+            <div class='mobile-index-thumbnail'>
+              <div class='Image'>
+                <img expr:src='data:post.thumbnailUrl'/>
+              </div>
+            </div>
+          </b:if>
+
+          <div class='post-body'>
+            <b:if cond='data:post.snippet'><data:post.snippet/></b:if>
+          </div>
+        </div>
+
+        <div style='clear: both;'/>
+      </a>
+
+      <div class='mobile-index-comment'>
+        <b:include cond='data:blog.pageType != &quot;static_page&quot;                          and data:post.allowComments                          and data:post.numComments != 0' data='post' name='comment_count_picker'/>
+      </div>
+    </div>
+  </div>
+</b:includable>
+          <b:includable id='mobile-main' var='top'>
+    <!-- posts -->
+    <div class='blog-posts hfeed'>
+
+      <b:include data='top' name='status-message'/>
+
+      <b:if cond='data:blog.pageType == &quot;index&quot;'>
+        <b:loop values='data:posts' var='post'>
+          <b:include data='post' name='mobile-index-post'/>
+        </b:loop>
+      <b:else/>
+        <b:loop values='data:posts' var='post'>
+          <b:include data='post' name='mobile-post'/>
+        </b:loop>
+      </b:if>
+    </div>
+
+   <b:include name='mobile-nextprev'/>
+</b:includable>
+          <b:includable id='mobile-nextprev'>
+  <div class='blog-pager' id='blog-pager'>
+    <b:if cond='data:newerPageUrl'>
+      <div class='mobile-link-button' id='blog-pager-newer-link'>
+      <a class='blog-pager-newer-link' expr:href='data:newerPageUrl' expr:id='data:widget.instanceId + &quot;_blog-pager-newer-link&quot;' expr:title='data:newerPageTitle'>&amp;lsaquo;</a>
+      </div>
+    </b:if>
+
+    <b:if cond='data:olderPageUrl'>
+      <div class='mobile-link-button' id='blog-pager-older-link'>
+      <a class='blog-pager-older-link' expr:href='data:olderPageUrl' expr:id='data:widget.instanceId + &quot;_blog-pager-older-link&quot;' expr:title='data:olderPageTitle'>&amp;rsaquo;</a>
+      </div>
+    </b:if>
+
+    <div class='mobile-link-button' id='blog-pager-home-link'>
+    <a class='home-link' expr:href='data:blog.homepageUrl'><data:homeMsg/></a>
+    </div>
+
+    <div class='mobile-desktop-link'>
+      <a class='home-link' expr:href='data:desktopLinkUrl'><data:desktopLinkMsg/></a>
+    </div>
+
+  </div>
+  <div class='clear'/>
+</b:includable>
+          <b:includable id='mobile-post' var='post'>
+  <div class='date-outer'>
+    <b:if cond='data:post.dateHeader'>
+      <h2 class='date-header'><span><data:post.dateHeader/></span></h2>
+    </b:if>
+    <div class='date-posts'>
+      <div class='post-outer'>
+
+        <div class='post hentry uncustomized-post-template' itemscope='itemscope' itemtype='http://schema.org/BlogPosting'>
+          <b:if cond='data:post.thumbnailUrl'>
+            <meta expr:content='data:post.thumbnailUrl' itemprop='image_url'/>
+          </b:if>
+          <meta expr:content='data:blog.blogId' itemprop='blogId'/>
+          <meta expr:content='data:post.id' itemprop='postId'/>
+
+          <a expr:name='data:post.id'/>
+          <b:if cond='data:post.title'>
+            <h3 class='post-title entry-title' itemprop='name'>
+              <b:if cond='data:post.link'>
+                <a expr:href='data:post.link'><data:post.title/></a>
+              <b:elseif cond='data:post.url and data:blog.url != data:post.url'/>
+                <a expr:href='data:post.url'><data:post.title/></a>
+              <b:else/>
+                <data:post.title/>
+              </b:if>
+            </h3>
+          </b:if>
+
+          <div class='post-header'>
+            <div class='post-header-line-1'/>
+          </div>
+
+          <div class='post-body entry-content' expr:id='&quot;post-body-&quot; + data:post.id' itemprop='articleBody'>
+            <data:post.body/>
+            <div style='clear: both;'/> <!-- clear for photos floats -->
+          </div>
+
+          <div class='post-footer'>
+            <div class='post-footer-line post-footer-line-1'>
+              <span class='post-author vcard'>
+                <b:if cond='data:top.showAuthor'>
+                  <b:if cond='data:post.authorProfileUrl'>
+                    <span class='fn' itemprop='author' itemscope='itemscope' itemtype='http://schema.org/Person'>
+                      <meta expr:content='data:post.authorProfileUrl' itemprop='url'/>
+                      <a expr:href='data:post.authorProfileUrl' rel='author' title='author profile'>
+                        <span itemprop='name'><data:post.author/></span>
+                      </a>
+                    </span>
+                  <b:else/>
+                    <span class='fn' itemprop='author' itemscope='itemscope' itemtype='http://schema.org/Person'>
+                      <span itemprop='name'><data:post.author/></span>
+                    </span>
+                  </b:if>
+                </b:if>
+              </span>
+
+              <span class='post-timestamp'>
+                <b:if cond='data:top.showTimestamp'>
+                  <data:top.timestampLabel/>
+                  <b:if cond='data:post.url'>
+                    <meta expr:content='data:post.url.canonical' itemprop='url'/>
+                    <a class='timestamp-link' expr:href='data:post.url' rel='bookmark' title='permanent link'><abbr class='published' expr:title='data:post.timestampISO8601' itemprop='datePublished'><data:post.timestamp/></abbr></a>
+                  </b:if>
+                </b:if>
+              </span>
+
+              <span class='post-comment-link'>
+                <b:include cond='data:blog.pageType not in {&quot;item&quot;,&quot;static_page&quot;}                                  and data:post.allowComments' data='post' name='comment_count_picker'/>
+              </span>
+            </div>
+
+            <div class='post-footer-line post-footer-line-2'>
+              <b:if cond='data:top.showMobileShare'>
+                <div class='mobile-link-button goog-inline-block' id='mobile-share-button'>
+                  <a href='javascript:void(0);'><data:shareMsg/></a>
+                </div>
+              </b:if>
+            </div>
+
+          </div>
+        </div>
+
+        <b:include cond='data:blog.pageType in {&quot;static_page&quot;,&quot;item&quot;}' data='post' name='comment_picker'/>
+      </div>
+    </div>
+  </div>
+</b:includable>
+          <b:includable id='neoPostListCards' var='unused'>
+          <div class='neo-card-grid'>
+            <b:if cond='data:posts and data:numPosts &gt; 0'>
+              <b:loop index='i' values='data:posts' var='post'>
+                <div>
+                  <div class='card post-card'>
+                    <b:if cond='data:post.firstImageUrl'>
+                      <img class='card-img-top' expr:alt='data:post.title' expr:src='resizeImage(data:post.firstImageUrl, 400, &quot;4:3&quot;)' loading='lazy'/>
+                    <b:else/>
+                      <div class='card-img-top bg-light d-flex align-items-center justify-content-center' style='height: 200px;'>
+                        <span class='text-muted'>暂无图片</span>
+                      </div>
+                    </b:if>
+                    <div class='card-body d-flex flex-column'>
+                      <h5 class='card-title'>
+                        <a expr:href='data:post.url'><data:post.title/></a>
+                      </h5>
+                      <div class='text-muted small mb-2'>
+                        <time expr:datetime='data:post.timestampISO8601'><data:post.timestamp/></time>
+                      </div>
+                      <b:if cond='data:post.labels'>
+                        <div class='mb-2'>
+                          <b:loop values='data:post.labels' var='label'>
+                            <a class='badge bg-secondary text-decoration-none me-1 mb-1' expr:href='data:label.url'>
+                              <data:label.name/>
+                            </a>
+                          </b:loop>
+                        </div>
+                      </b:if>
+                      <p class='card-text flex-grow-1'>
+                        <b:if cond='data:post.snippet'>
+                          <data:post.snippet/>
+                        </b:if>
+                      </p>
+                      <a class='btn btn-outline-dark btn-sm mt-auto align-self-start' expr:href='data:post.url'>
+                        阅读更多
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </b:loop>
+            <b:else/>
+              <div>
+                <div class='alert alert-info text-center'>
+                  此视图下未找到文章&#12290;
+                </div>
+              </div>
+            </b:if>
+          </div>
+        </b:includable>
+          <b:includable id='neoPostListTable' var='unused'>
+          <div class='neo-table-wrapper'>
+            <table class='neo-data-table' id='neo-data-table-posts'>
+              <thead>
+                <tr>
+                  <th>ID</th> <th>标题</th> <th>链接</th> <th>发布时间&#65288;ISO格式&#65289;</th> <th>发布时间&#65288;格式化&#65289;</th> <th>作者</th> <th>标签</th> <th>摘要</th> <th>首图链接</th>
+                </tr>
+              </thead>
+              <tbody>
+                <b:if cond='data:posts and data:numPosts &gt; 0'>
+                  <b:loop index='i' values='data:posts' var='post'>
+                    <tr expr:data-post-id='data:post.id'>
+                      <td><data:post.id/></td>
+                      <td><data:post.title/></td>
+                      <td><a expr:href='data:post.url'><data:post.url/></a></td>
+                      <td><time expr:datetime='data:post.timestampISO8601'><data:post.timestampISO8601/></time></td>
+                      <td><data:post.timestamp/></td>
+                      <td><data:post.author/></td>
+                      <td>
+                        <b:if cond='data:post.labels'>
+                          <ul>
+                            <b:loop values='data:post.labels' var='label'>
+                              <li expr:data-label-url='data:label.url'><data:label.name/></li>
+                            </b:loop>
+                          </ul>
+                        <b:else/>-</b:if>
+                      </td>
+                      <td>
+                         <b:if cond='data:post.snippet'><data:post.snippet/><b:else/>-</b:if>
+                      </td>
+                      <td>
+                        <b:eval expr='data:post.firstImageUrl ? resizeImage(data:post.firstImageUrl, 72, &quot;1:1&quot;) : &quot;(无图片)&quot;'/>
+                      </td>
+                    </tr>
+                  </b:loop>
+                <b:else/>
+                   <tr>
+                     <td colspan='9'>此视图下未找到文章&#12290;</td>
+                   </tr>
+                </b:if>
+              </tbody>
+            </table>
+          </div>
+        </b:includable>
+          <b:includable id='nextprev'>
+  <div class='neo-pager' id='blog-pager'>
+    <span>
+      <b:if cond='data:newerPageUrl'>
+        <a expr:href='data:newerPageUrl' expr:title='data:newerPageTitle'>&#8592; <data:newerPageTitle/></a>
+      <b:else/>
+        <span class='neo-pager-disabled'>&#8592; 没有了</span>
+      </b:if>
+    </span>
+    <a class='neo-pager-home' expr:href='data:blog.homepageUrl'>&#8962; <data:homeMsg/></a>
+    <span>
+      <b:if cond='data:olderPageUrl'>
+        <a expr:href='data:olderPageUrl' expr:title='data:olderPageTitle'><data:olderPageTitle/> &#8594;</a>
+      <b:else/>
+        <span class='neo-pager-disabled'>没有了 &#8594;</span>
+      </b:if>
+    </span>
+  </div>
+  <div class='clear'/>
+</b:includable>
+          <b:includable id='post' var='post'>
+  <div class='post hentry uncustomized-post-template' itemprop='blogPost' itemscope='itemscope' itemtype='http://schema.org/BlogPosting'>
+    <b:if cond='data:post.firstImageUrl'>
+      <meta expr:content='data:post.firstImageUrl' itemprop='image_url'/>
+    </b:if>
+    <meta expr:content='data:blog.blogId' itemprop='blogId'/>
+    <meta expr:content='data:post.id' itemprop='postId'/>
+
+    <a expr:name='data:post.id'/>
+    <b:if cond='data:post.title'>
+      <h3 class='post-title entry-title' itemprop='name'>
+      <b:if cond='data:post.link or (data:post.url and data:blog.url != data:post.url)'>
+        <a expr:href='data:post.link ? data:post.link : data:post.url'><data:post.title/></a>
+      <b:else/>
+        <data:post.title/>
+      </b:if>
+      </h3>
+    </b:if>
+
+    <div class='post-header'>
+    <div class='post-header-line-1'/>
+    </div>
+
+    <!-- Then use the post body as the schema.org description, for good G+/FB snippeting. -->
+    <div class='post-body entry-content' expr:id='&quot;post-body-&quot; + data:post.id' expr:itemprop='(data:blog.metaDescription ? &quot;&quot; : &quot;description &quot;) + &quot;articleBody&quot;'>
+      <data:post.body/>
+      <div style='clear: both;'/> <!-- clear for photos floats -->
+    </div>
+
+    <b:if cond='data:post.hasJumpLink'>
+      <div class='jump-link'>
+        <a expr:href='data:post.url + &quot;#more&quot;' expr:title='data:post.title'><data:post.jumpText/></a>
+      </div>
+    </b:if>
+
+    <div class='post-footer'>
+    <div class='post-footer-line post-footer-line-1'>
+      <span class='post-author vcard'>
+        <b:if cond='data:top.showAuthor'>
+          <data:top.authorLabel/>
+            <b:if cond='data:post.authorProfileUrl'>
+              <span class='fn' itemprop='author' itemscope='itemscope' itemtype='http://schema.org/Person'>
+                <meta expr:content='data:post.authorProfileUrl' itemprop='url'/>
+                <a class='g-profile' expr:href='data:post.authorProfileUrl' rel='author' title='author profile'>
+                  <span itemprop='name'><data:post.author/></span>
+                </a>
+              </span>
+            <b:else/>
+              <span class='fn' itemprop='author' itemscope='itemscope' itemtype='http://schema.org/Person'>
+                <span itemprop='name'><data:post.author/></span>
+              </span>
+            </b:if>
+        </b:if>
+      </span>
+
+      <span class='post-timestamp'>
+        <b:if cond='data:top.showTimestamp'>
+          <data:top.timestampLabel/>
+          <b:if cond='data:post.url'>
+            <meta expr:content='data:post.url.canonical' itemprop='url'/>
+            <a class='timestamp-link' expr:href='data:post.url' rel='bookmark' title='permanent link'><abbr class='published' expr:title='data:post.timestampISO8601' itemprop='datePublished'><data:post.timestamp/></abbr></a>
+          </b:if>
+        </b:if>
+      </span>
+
+      <span class='post-comment-link'>
+        <b:include cond='data:blog.pageType not in {&quot;item&quot;,&quot;static_page&quot;}                          and data:post.allowComments' data='post' name='comment_count_picker'/>
+      </span>
+
+      <span class='post-icons'>
+        <!-- email post links -->
+        <b:if cond='data:post.emailPostUrl'>
+          <span class='item-action'>
+          <a expr:href='data:post.emailPostUrl' expr:title='data:top.emailPostMsg'>
+            <img alt='' class='icon-action' height='13' src='https://resources.blogblog.com/img/icon18_email.gif' width='18'/>
+          </a>
+          </span>
+        </b:if>
+
+        <!-- quickedit pencil -->
+        <b:include data='post' name='postQuickEdit'/>
+      </span>
+
+      <!-- share buttons -->
+      <div class='post-share-buttons goog-inline-block'>
+        <b:include cond='data:post.sharePostUrl' data='post' name='shareButtons'/>
+      </div>
+
+      </div>
+
+      <div class='post-footer-line post-footer-line-2'>
+      <span class='post-labels'>
+        <b:if cond='data:top.showPostLabels and data:post.labels'>
+          <data:postLabelsLabel/>
+          <b:loop values='data:post.labels' var='label'>
+            <a expr:href='data:label.url' rel='tag'><data:label.name/></a><b:if cond='not data:label.isLast'>,</b:if>
+          </b:loop>
+        </b:if>
+      </span>
+      </div>
+
+      <div class='post-footer-line post-footer-line-3'>
+      <span class='post-location'>
+        <b:if cond='data:top.showLocation and data:post.location'>
+          <data:postLocationLabel/>
+          <a expr:href='data:post.location.mapsUrl' target='_blank'><data:post.location.name/></a>
+        </b:if>
+      </span>
+      </div>
+      <b:if cond='data:post.authorAboutMe'>
+        <div class='author-profile' itemprop='author' itemscope='itemscope' itemtype='http://schema.org/Person'>
+          <b:if cond='data:post.authorPhoto.url'>
+            <img expr:src='data:post.authorPhoto.url' itemprop='image' width='50px'/>
+          </b:if>
+          <div>
+            <a class='g-profile' expr:href='data:post.authorProfileUrl' itemprop='url' rel='author' title='author profile'>
+              <span itemprop='name'><data:post.author/></span>
+            </a>
+          </div>
+          <span itemprop='description'><data:post.authorAboutMe/></span>
+        </div>
+      </b:if>
+    </div>
+  </div>
+</b:includable>
+          <b:includable id='postQuickEdit' var='post'>
+  <b:if cond='data:post.editUrl'>
+    <span expr:class='&quot;item-control &quot; + data:post.adminClass'>
+      <a expr:href='data:post.editUrl' expr:title='data:top.editPostMsg'>
+        <img alt='' class='icon-action' height='18' src='https://resources.blogblog.com/img/icon18_edit_allbkg.gif' width='18'/>
+      </a>
+    </span>
+  </b:if>
+</b:includable>
+          <b:includable id='shareButtons' var='post'>
+  <b:if cond='data:top.showEmailButton'><a class='goog-inline-block share-button sb-email' expr:href='data:post.sharePostUrl + &quot;&amp;target=email&quot;' expr:title='data:top.emailThisMsg' target='_blank'><span class='share-button-link-text'><data:top.emailThisMsg/></span></a></b:if><b:if cond='data:top.showBlogThisButton'><a class='goog-inline-block share-button sb-blog' expr:href='data:post.sharePostUrl + &quot;&amp;target=blog&quot;' expr:onclick='&quot;window.open(this.href, \&quot;_blank\&quot;, \&quot;height=270,width=475\&quot;); return false;&quot;' expr:title='data:top.blogThisMsg' target='_blank'><span class='share-button-link-text'><data:top.blogThisMsg/></span></a></b:if><b:if cond='data:top.showTwitterButton'><a class='goog-inline-block share-button sb-twitter' expr:href='data:post.sharePostUrl + &quot;&amp;target=twitter&quot;' expr:title='data:top.shareToTwitterMsg' target='_blank'><span class='share-button-link-text'><data:top.shareToTwitterMsg/></span></a></b:if><b:if cond='data:top.showFacebookButton'><a class='goog-inline-block share-button sb-facebook' expr:href='data:post.sharePostUrl + &quot;&amp;target=facebook&quot;' expr:onclick='&quot;window.open(this.href, \&quot;_blank\&quot;, \&quot;height=430,width=640\&quot;); return false;&quot;' expr:title='data:top.shareToFacebookMsg' target='_blank'><span class='share-button-link-text'><data:top.shareToFacebookMsg/></span></a></b:if><b:if cond='data:top.showPinterestButton'><a class='goog-inline-block share-button sb-pinterest' expr:href='data:post.sharePostUrl + &quot;&amp;target=pinterest&quot;' expr:title='data:top.shareToPinterestMsg' target='_blank'><span class='share-button-link-text'><data:top.shareToPinterestMsg/></span></a></b:if>
+</b:includable>
+          <b:includable id='status-message'>
+  <b:if cond='data:navMessage'>
+  <div class='status-msg-wrap'>
+    <div class='status-msg-body'>
+      <data:navMessage/>
+    </div>
+    <div class='status-msg-border'>
+      <div class='status-msg-bg'>
+        <div class='status-msg-hidden'><data:navMessage/></div>
+      </div>
+    </div>
+  </div>
+  <div style='clear: both;'/>
+  </b:if>
+</b:includable>
+          <b:includable id='threaded-comment-form' var='post'>
+  <div class='comment-form'>
+    <a name='comment-form'/>
+    <b:if cond='data:mobile'>
+      <p><data:blogCommentMessage/></p>
+      <data:blogTeamBlogMessage/>
+      <a expr:href='data:post.commentFormIframeSrc' id='comment-editor-src'/>
+      <iframe allowtransparency='true' class='blogger-iframe-colorize blogger-comment-from-post' expr:height='data:cmtIframeInitialHeight' frameborder='0' id='comment-editor' name='comment-editor' src='' style='display: none' width='100%'/>
+    <b:else/>
+      <p><data:blogCommentMessage/></p>
+      <data:blogTeamBlogMessage/>
+      <a expr:href='data:post.commentFormIframeSrc' id='comment-editor-src'/>
+      <iframe allowtransparency='true' class='blogger-iframe-colorize blogger-comment-from-post' expr:height='data:cmtIframeInitialHeight' frameborder='0' id='comment-editor' name='comment-editor' src='' width='100%'/>
+    </b:if>
+    <data:post.cmtfpIframe/>
+    <script type='text/javascript'>
+      BLOG_CMT_createIframe(&#39;<data:post.appRpcRelayPath/>&#39;);
+    </script>
+  </div>
+</b:includable>
+          <b:includable id='threaded_comment_js' var='post'>
+  <script async='async' expr:src='data:post.commentSrc' type='text/javascript'/>
+
+  <script type='text/javascript'>
+    (function() {
+      var items = <data:post.commentJso/>;
+      var msgs = <data:post.commentMsgs/>;
+      var config = <data:post.commentConfig/>;
+
+// <![CDATA[
+      var cursor = null;
+      if (items && items.length > 0) {
+        cursor = parseInt(items[items.length - 1].timestamp) + 1;
+      }
+
+      var bodyFromEntry = function(entry) {
+        var text = (entry &&
+                    ((entry.content && entry.content.$t) ||
+                     (entry.summary && entry.summary.$t))) ||
+            '';
+        if (entry && entry.gd$extendedProperty) {
+          for (var k in entry.gd$extendedProperty) {
+            if (entry.gd$extendedProperty[k].name == 'blogger.contentRemoved') {
+              return '<span class="deleted-comment">' + text + '</span>';
+            }
+          }
+        }
+        return text;
+      }
+
+      var parse = function(data) {
+        cursor = null;
+        var comments = [];
+        if (data && data.feed && data.feed.entry) {
+          for (var i = 0, entry; entry = data.feed.entry[i]; i++) {
+            var comment = {};
+            // comment ID, parsed out of the original id format
+            var id = /blog-(\d+).post-(\d+)/.exec(entry.id.$t);
+            comment.id = id ? id[2] : null;
+            comment.body = bodyFromEntry(entry);
+            comment.timestamp = Date.parse(entry.published.$t) + '';
+            if (entry.author && entry.author.constructor === Array) {
+              var auth = entry.author[0];
+              if (auth) {
+                comment.author = {
+                  name: (auth.name ? auth.name.$t : undefined),
+                  profileUrl: (auth.uri ? auth.uri.$t : undefined),
+                  avatarUrl: (auth.gd$image ? auth.gd$image.src : undefined)
+                };
+              }
+            }
+            if (entry.link) {
+              if (entry.link[2]) {
+                comment.link = comment.permalink = entry.link[2].href;
+              }
+              if (entry.link[3]) {
+                var pid = /.*comments\/default\/(\d+)\?.*/.exec(entry.link[3].href);
+                if (pid && pid[1]) {
+                  comment.parentId = pid[1];
+                }
+              }
+            }
+            comment.deleteclass = 'item-control blog-admin';
+            if (entry.gd$extendedProperty) {
+              for (var k in entry.gd$extendedProperty) {
+                if (entry.gd$extendedProperty[k].name == 'blogger.itemClass') {
+                  comment.deleteclass += ' ' + entry.gd$extendedProperty[k].value;
+                } else if (entry.gd$extendedProperty[k].name == 'blogger.displayTime') {
+                  comment.displayTime = entry.gd$extendedProperty[k].value;
+                }
+              }
+            }
+            comments.push(comment);
+          }
+        }
+        return comments;
+      };
+
+      var paginator = function(callback) {
+        if (hasMore()) {
+          var url = config.feed + '?alt=json&v=2&orderby=published&reverse=false&max-results=50';
+          if (cursor) {
+            url += '&published-min=' + new Date(cursor).toISOString();
+          }
+          window.bloggercomments = function(data) {
+            var parsed = parse(data);
+            cursor = parsed.length < 50 ? null
+                : parseInt(parsed[parsed.length - 1].timestamp) + 1
+            callback(parsed);
+            window.bloggercomments = null;
+          }
+          url += '&callback=bloggercomments';
+          var script = document.createElement('script');
+          script.type = 'text/javascript';
+          script.src = url;
+          document.getElementsByTagName('head')[0].appendChild(script);
+        }
+      };
+      var hasMore = function() {
+        return !!cursor;
+      };
+      var getMeta = function(key, comment) {
+        if ('iswriter' == key) {
+          var matches = !!comment.author
+              && comment.author.name == config.authorName
+              && comment.author.profileUrl == config.authorUrl;
+          return matches ? 'true' : '';
+        } else if ('deletelink' == key) {
+          return config.baseUri + '/comment/delete/'
+               + config.blogId + '/' + comment.id;
+        } else if ('deleteclass' == key) {
+          return comment.deleteclass;
+        }
+        return '';
+      };
+
+      var replybox = null;
+      var replyUrlParts = null;
+      var replyParent = undefined;
+
+      var onReply = function(commentId, domId) {
+        if (replybox == null) {
+          // lazily cache replybox, and adjust to suit this style:
+          replybox = document.getElementById('comment-editor');
+          if (replybox != null) {
+            replybox.height = '250px';
+            replybox.style.display = 'block';
+            replyUrlParts = replybox.src.split('#');
+          }
+        }
+        if (replybox && (commentId !== replyParent)) {
+          replybox.src = '';
+          document.getElementById(domId).insertBefore(replybox, null);
+          replybox.src = replyUrlParts[0]
+              + (commentId ? '&parentID=' + commentId : '')
+              + '#' + replyUrlParts[1];
+          replyParent = commentId;
+        }
+      };
+
+      var hash = (window.location.hash || '#').substring(1);
+      var startThread, targetComment;
+      if (/^comment-form_/.test(hash)) {
+        startThread = hash.substring('comment-form_'.length);
+      } else if (/^c[0-9]+$/.test(hash)) {
+        targetComment = hash.substring(1);
+      }
+
+      // Configure commenting API:
+      var configJso = {
+        'maxDepth': config.maxThreadDepth
+      };
+      var provider = {
+        'id': config.postId,
+        'data': items,
+        'loadNext': paginator,
+        'hasMore': hasMore,
+        'getMeta': getMeta,
+        'onReply': onReply,
+        'rendered': true,
+        'initComment': targetComment,
+        'initReplyThread': startThread,
+        'config': configJso,
+        'messages': msgs
+      };
+
+      var render = function() {
+        if (window.goog && window.goog.comments) {
+          var holder = document.getElementById('comment-holder');
+          window.goog.comments.render(holder, provider);
+        }
+      };
+
+      // render now, or queue to render when library loads:
+      if (window.goog && window.goog.comments) {
+        render();
+      } else {
+        window.goog = window.goog || {};
+        window.goog.comments = window.goog.comments || {};
+        window.goog.comments.loadQueue = window.goog.comments.loadQueue || [];
+        window.goog.comments.loadQueue.push(render);
+      }
+    })();
+// ]]>
+  </script>
+</b:includable>
+          <b:includable id='threaded_comments' var='post'>
+  <div class='comments' id='comments'>
+    <a name='comments'/>
+    <h4><data:post.commentLabelFull/>:</h4>
+
+    <div class='comments-content'>
+      <b:include cond='data:post.embedCommentForm' data='post' name='threaded_comment_js'/>
+      <div id='comment-holder'>
+         <data:post.commentHtml/>
+      </div>
+    </div>
+
+    <p class='comment-footer'>
+      <b:if cond='data:post.allowNewComments'>
+        <b:include data='post' name='threaded-comment-form'/>
+      <b:else/>
+        <data:post.noNewCommentsText/>
+      </b:if>
+    </p>
+
+    <b:if cond='data:showCmtPopup'>
+      <div id='comment-popup'>
+        <iframe allowtransparency='true' frameborder='0' id='comment-actions' name='comment-actions' scrolling='no'>
+        </iframe>
+      </div>
+    </b:if>
+
+    <div id='backlinks-container'>
+    <div expr:id='data:widget.instanceId + &quot;_backlinks-container&quot;'>
+    </div>
+    </div>
+  </div>
+</b:includable>
+        </b:widget>
+      </b:section>
+  </main> <!-- 结束主要内容区域 -->
+
+
+
+  <!-- 网站底部 -->
+  <footer class='neo-site-footer'>
+    <p>版权所有 &#169; <data:blog.title/></p>
+  </footer>
+
+
+
+
+
+  <!-- 条件组件区块 -->
+  <b:section class='neo-hidden' cond='data:view.isHomepage' id='neo-widget-home' name='仅首页组件（隐藏）' showaddelement='yes'>
+    <b:widget id='Header1' locked='false' title='ZeAy Blog (标题)' type='Header'>
+      <b:widget-settings>
+        <b:widget-setting name='displayUrl'/>
+        <b:widget-setting name='displayHeight'>0</b:widget-setting>
+        <b:widget-setting name='sectionWidth'>-1</b:widget-setting>
+        <b:widget-setting name='useImage'>false</b:widget-setting>
+        <b:widget-setting name='shrinkToFit'>false</b:widget-setting>
+        <b:widget-setting name='imagePlacement'>BEHIND</b:widget-setting>
+        <b:widget-setting name='displayWidth'>0</b:widget-setting>
+      </b:widget-settings>
+      <b:includable id='main'>
+
+  <b:if cond='data:useImage'>
+    <b:if cond='data:imagePlacement == &quot;BEHIND&quot;'>
+      <!--
+      Show image as background to text. You can't really calculate the width
+      reliably in JS because margins are not taken into account by any of
+      clientWidth, offsetWidth or scrollWidth, so we don't force a minimum
+      width if the user is using shrink to fit.
+      This results in a margin-width's worth of pixels being cropped. If the
+      user is not using shrink to fit then we expand the header.
+      -->
+      <b:if cond='data:mobile'>
+        <div id='header-inner'>
+          <div class='titlewrapper' style='background: transparent'>
+            <h1 class='title' style='background: transparent; border-width: 0px'>
+              <b:include name='title'/>
+            </h1>
+          </div>
+          <b:include name='description'/>
+        </div>
+      <b:else/>
+        <div expr:style='&quot;background-image: url(\&quot;&quot; + data:sourceUrl + &quot;\&quot;); &quot;                      + &quot;background-position: &quot;                      + data:backgroundPositionStyleStr + &quot;; &quot;                      + data:widthStyleStr                      + &quot;min-height: &quot; + data:height                      + &quot;_height: &quot; + data:height                      + &quot;background-repeat: no-repeat; &quot;' id='header-inner'>
+          <div class='titlewrapper' style='background: transparent'>
+            <h1 class='title' style='background: transparent; border-width: 0px'>
+              <b:include name='title'/>
+            </h1>
+          </div>
+          <b:include name='description'/>
+        </div>
+      </b:if>
+    <b:else/>
+      <!--Show the image only-->
+      <div id='header-inner'>
+        <a expr:href='data:blog.homepageUrl' style='display: block'>
+          <img expr:alt='data:title' expr:height='data:height' expr:id='data:widget.instanceId + &quot;_headerimg&quot;' expr:src='data:sourceUrl' expr:width='data:width' style='display: block'/>
+        </a>
+        <!--Show the description-->
+        <b:if cond='data:imagePlacement == &quot;BEFORE_DESCRIPTION&quot;'>
+          <b:include name='description'/>
+        </b:if>
+      </div>
+    </b:if>
+  <b:else/>
+    <!--No header image -->
+    <div id='header-inner'>
+      <div class='titlewrapper'>
+        <h1 class='title'>
+          <b:include name='title'/>
+        </h1>
+      </div>
+      <b:include name='description'/>
+    </div>
+  </b:if>
+</b:includable>
+      <b:includable id='description'>
+  <div class='descriptionwrapper'>
+    <p class='description'><span><data:description/></span></p>
+  </div>
+</b:includable>
+      <b:includable id='title'>
+  <b:tag cond='data:blog.url != data:blog.homepageUrl' expr:href='data:blog.homepageUrl' name='a'>
+    <data:title/>
+  </b:tag>
+</b:includable>
+    </b:widget>
+    <b:widget id='AdSense1' locked='false' title='' type='AdSense'>
+      <b:includable id='main'>
+  <div class='widget-content'>
+    <data:adCode/>
+    <b:include name='quickedit'/>
+  </div>
+</b:includable>
+    </b:widget>
+    <b:widget id='AdSense2' locked='false' title='' type='AdSense'>
+      <b:includable id='main'>
+  <div class='widget-content'>
+    <data:adCode/>
+    <b:include name='quickedit'/>
+  </div>
+</b:includable>
+    </b:widget>
+  </b:section>
+  <b:section class='neo-hidden' cond='data:blog.pageType == &quot;static_page&quot;' id='neo-widget-page' name='仅页面组件（隐藏）' showaddelement='yes'/>
+  <b:section class='neo-hidden' cond='data:blog.pageType == &quot;item&quot;' id='neo-widget-post' name='仅文章组件（隐藏）' showaddelement='yes'/>
+  <b:section class='neo-hidden' cond='data:blog.pageType == &quot;archive&quot;' id='neo-widget-archive' name='仅归档组件（隐藏）' showaddelement='yes'/>
+  <b:section class='neo-hidden' cond='data:blog.pageType == &quot;index&quot; and !data:view.isHomepage' id='neo-widget-index' name='仅索引页组件（隐藏）' showaddelement='yes'/>
+  <b:section class='neo-hidden' cond='data:blog.pageType == &quot;error_page&quot;' id='neo-widget-error' name='仅错误页组件（隐藏）' showaddelement='yes'/>
+  <b:section class='neo-hidden' id='neo-widget-global' name='全局脚本/HTML（所有页面，隐藏）' showaddelement='yes'/>
+  <b:section id='neo-widget-visible' name='全局HTML（所有页面，可见）' showaddelement='yes'/>
+ 
+ 
+
+   <!-- 条件脚本块（页面类型占位，可通过小工具添加自定义代码） -->
+  <b:if cond='data:blog.url == data:blog.homepageUrl'>
+    <!-- 首页自定义脚本 -->
+  <b:elseif cond='data:blog.pageType == &quot;item&quot;'/>
+    <!-- 文章页自定义脚本 -->
+  <b:elseif cond='data:blog.pageType == &quot;static_page&quot;'/>
+    <!-- 静态页面自定义脚本 -->
+  <b:elseif cond='data:blog.pageType == &quot;archive&quot;'/>
+    <!-- 归档页自定义脚本 -->
+  <b:elseif cond='data:blog.pageType == &quot;index&quot; and !data:view.isHomepage'/>
+    <!-- 索引页自定义脚本 -->
+  <b:elseif cond='data:blog.pageType == &quot;error_page&quot;'/>
+    <!-- 错误页自定义脚本 -->
+  </b:if>
+
+  <!-- 全局JavaScript&#65288;在所有页面运行&#65289; -->
+  <script id='neo-global-script' type='text/javascript'>
+  //<![CDATA[
+    // ===== 搜索框切换 =====
+    function toggleSearch() {
+      var sf = document.getElementById('neo-search-form');
+      if (sf) {
+        sf.classList.toggle('show');
+        if (sf.classList.contains('show')) {
+          var input = sf.querySelector('input');
+          if (input) setTimeout(function(){ input.focus(); }, 100);
+        }
+      }
+    }
+
+    // ===== 评论区（原生渲染，点击显示/隐藏） =====
+    window.toggleComments = function(btn) {
+      var wrapper = document.getElementById('neo-comments-wrapper');
+      if (!wrapper) return;
+      if (wrapper.style.display === 'none') {
+        wrapper.style.display = 'block';
+        btn.textContent = '\u6536\u8D77\u8BC4\u8BBA';
+      } else {
+        wrapper.style.display = 'none';
+        btn.textContent = '\u67E5\u770B\u8BC4\u8BBA';
+      }
+    };
+
+    // ===== 阅读进度条 + 返回顶部按钮（rAF 节流） =====
+    (function() {
+      var bar = document.getElementById('neo-progress-bar');
+      var btn = document.getElementById('neo-back-to-top');
+      var ticking = false;
+      window.addEventListener('scroll', function() {
+        if (!ticking) {
+          requestAnimationFrame(function() {
+            if (bar) {
+              var scrollTop = window.scrollY || document.documentElement.scrollTop;
+              var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+              var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+              bar.style.width = Math.min(progress, 100) + '%';
+            }
+            if (btn) {
+              if (window.scrollY > 400) { btn.classList.add('show'); }
+              else { btn.classList.remove('show'); }
+            }
+            ticking = false;
+          });
+          ticking = true;
+        }
+      });
+    })();
+
+    // ===== 文章阅读时间 + 字数统计 =====
+    (function() {
+      var bodies = document.querySelectorAll('[id^="neo-post-body-"]');
+      for (var i = 0; i < bodies.length; i++) {
+        var text = bodies[i].innerText || bodies[i].textContent || '';
+        var wordCount = text.replace(/\s+/g, '').length;
+        var minutes = Math.max(1, Math.ceil(wordCount / 500));
+        var postId = bodies[i].id.replace('neo-post-body-', '');
+        var rt = document.getElementById('neo-rt-' + postId);
+        if (rt) { rt.textContent = '\u7EA6 ' + minutes + ' \u5206\u949F'; }
+        var wc = document.getElementById('neo-wc-' + postId);
+        if (wc) { wc.textContent = '\u5171 ' + wordCount + ' \u5B57'; }
+      }
+    })();
+
+    // ===== 头部自动显隐 =====
+    (function() {
+      var header = document.querySelector('.neo-site-header');
+      if (!header) return;
+      var lastScrollY = 0;
+      var ticking = false;
+      window.addEventListener('scroll', function() {
+        if (!ticking) {
+          requestAnimationFrame(function() {
+            var scrollY = window.scrollY;
+            if (scrollY > 200 && scrollY > lastScrollY) {
+              header.classList.add('neo-header-hidden');
+            } else if (scrollY < lastScrollY) {
+              header.classList.remove('neo-header-hidden');
+            }
+            lastScrollY = scrollY;
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }, {passive: true});
+    })();
+
+    // ===== 代码块复制按钮 =====
+    (function() {
+      var content = document.querySelector('.neo-post-content');
+      if (!content) return;
+      var pres = content.querySelectorAll('pre');
+      for (var i = 0; i < pres.length; i++) {
+        var pre = pres[i];
+        var wrapper = document.createElement('div');
+        wrapper.className = 'neo-code-block-wrapper';
+        pre.parentNode.insertBefore(wrapper, pre);
+        wrapper.appendChild(pre);
+
+        var btn = document.createElement('button');
+        btn.className = 'neo-copy-btn';
+        btn.textContent = '\u590D\u5236';
+        btn.onclick = function(e) {
+          var code = this.parentNode.querySelector('pre').innerText;
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(code).then(function() {
+              e.target.textContent = '\u2714 \u5DF2\u590D\u5236';
+              e.target.classList.add('copied');
+              setTimeout(function() {
+                e.target.textContent = '\u590D\u5236';
+                e.target.classList.remove('copied');
+              }, 2000);
+            });
+          } else {
+            // Fallback for older browsers
+            var ta = document.createElement('textarea');
+            ta.value = code; ta.style.position = 'fixed'; ta.style.left = '-9999px';
+            document.body.appendChild(ta);
+            ta.select(); document.execCommand('copy');
+            document.body.removeChild(ta);
+            e.target.textContent = '\u2714 \u5DF2\u590D\u5236';
+            e.target.classList.add('copied');
+            setTimeout(function() {
+              e.target.textContent = '\u590D\u5236';
+              e.target.classList.remove('copied');
+            }, 2000);
+          }
+        };
+        wrapper.appendChild(btn);
+      }
+    })();
+
+    // ===== 文章版权声明 =====
+    (function() {
+      var bodies = document.querySelectorAll('[id^="neo-post-body-"]');
+      for (var i = 0; i < bodies.length; i++) {
+        var postId = bodies[i].id.replace('neo-post-body-', '');
+        var cp = document.getElementById('neo-copyright-' + postId);
+        if (!cp) continue;
+        var url = window.location.href;
+        var title = document.title.replace(/\s*[-|].*$/, '').trim();
+        cp.style.display = 'block';
+        cp.innerHTML = '\u00A9 ' + new Date().getFullYear() + ' \u7248\u6743\u6240\u6709 | '
+          + '\u672C\u6587\u6807\u9898\uFF1A<a href="' + url + '">' + title + '</a><br/>'
+          + '\u8F6C\u8F7D\u8BF7\u4FDD\u7559\u539F\u59CB\u94FE\u63A5\uFF0C\u8C22\u8C22\u5408\u4F5C\u3002';
+      }
+    })();
+
+    // ===== 图片懒加载（IntersectionObserver） =====
+    (function() {
+      if (!('IntersectionObserver' in window)) return;
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            var img = entry.target;
+            if (img.dataset.src) {
+              img.src = img.dataset.src;
+              img.onload = function() { img.classList.add('neo-lazy-loaded'); };
+              img.removeAttribute('data-src');
+            }
+            observer.unobserve(img);
+          }
+        });
+      }, {rootMargin: '200px 0px'});
+
+      // 监听文章内容和卡片列表中的图片
+      function observeImages() {
+        var imgs = document.querySelectorAll('img:not(.neo-lazy-loaded):not([data-observed])');
+        for (var i = 0; i < imgs.length; i++) {
+          var img = imgs[i];
+          if (img.src && !img.dataset.src && img.loading !== 'lazy') {
+            img.dataset.src = img.src;
+            img.src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1 1%22%3E%3C/svg%3E';
+            img.classList.add('neo-lazy');
+            img.dataset.observed = '1';
+            observer.observe(img);
+          }
+        }
+      }
+      observeImages();
+      // 懒加载后动态添加的图片也处理
+      document.addEventListener('DOMContentLoaded', observeImages);
+    })();
+
+    // ===== 骨架屏 =====
+    (function() {
+      var grid = document.querySelector('.neo-card-grid');
+      if (!grid) return;
+      // 只在卡片列表页生效
+      var posts = grid.querySelectorAll('.post-card');
+      if (posts.length > 0) return; // 已有内容，不显示骨架屏
+
+      // 生成骨架屏
+      var skeletonCount = 6;
+      var html = '';
+      for (var i = 0; i < skeletonCount; i++) {
+        html += '<div><div class="neo-skeleton-card">'
+          + '<div class="neo-skeleton neo-skeleton-img"></div>'
+          + '<div class="neo-skeleton-body">'
+          + '<div class="neo-skeleton neo-skeleton-title"></div>'
+          + '<div class="neo-skeleton neo-skeleton-line"></div>'
+          + '<div class="neo-skeleton neo-skeleton-line short"></div>'
+          + '<div class="neo-skeleton neo-skeleton-btn"></div>'
+          + '</div></div></div>';
+      }
+      grid.innerHTML = html;
+
+      // 内容加载后替换（Blogspot 渲染完成后自动替换）
+      var checkInterval = setInterval(function() {
+        var realContent = document.querySelector('.neo-card-grid .post-card');
+        if (realContent) {
+          clearInterval(checkInterval);
+          // 内容已由 Blogspot 渲染，骨架屏会自动被替换
+        }
+      }, 200);
+      // 5秒后停止检查
+      setTimeout(function() { clearInterval(checkInterval); }, 5000);
+    })();
+
+    // ===== 加载更多文章 =====
+    window.loadMorePosts = function() {
+      var btn = document.getElementById('neo-load-more-btn');
+      if (!btn || btn.disabled) return;
+      btn.disabled = true;
+      btn.textContent = '\u52A0\u8F7D\u4E2D...';
+
+      // 计算当前已有文章数
+      var grid = document.querySelector('.neo-card-grid');
+      var currentCount = grid ? grid.querySelectorAll('.post-card').length : 0;
+      var startIndex = currentCount + 1;
+      var maxResults = 6;
+
+      // 构建 Feed URL
+      var feedUrl = '/feeds/posts/summary';
+      // 根据页面类型调整
+      var isSearch = document.querySelector('.neo-index-data');
+      var isArchive = document.querySelector('.neo-archive-data');
+      var searchQuery = '';
+      if (isSearch) {
+        var h2 = isSearch.querySelector('h2');
+        if (h2 && h2.textContent.indexOf('\u641C\u7D22\u7ED3\u679C') > -1) {
+          var m = h2.textContent.match(/"([^"]+)"/);
+          if (m) searchQuery = m[1];
+        }
+      }
+
+      feedUrl += '?alt=json-in-script&max-results=' + maxResults
+        + '&start-index=' + startIndex
+        + '&callback=neoLoadMoreCB';
+
+      var script = document.createElement('script');
+      script.src = feedUrl;
+      document.head.appendChild(script);
+    };
+
+    window.neoLoadMoreCB = function(data) {
+      var btn = document.getElementById('neo-load-more-btn');
+      var grid = document.querySelector('.neo-card-grid');
+      if (!grid) { if (btn) { btn.disabled = false; btn.textContent = '\u52A0\u8F7D\u66F4\u591A'; } return; }
+
+      var feed = data.feed;
+      if (!feed || !feed.entry || feed.entry.length === 0) {
+        if (btn) { btn.textContent = '\u6CA1\u6709\u66F4\u591A\u4E86'; btn.disabled = true; }
+        return;
+      }
+
+      var entries = feed.entry;
+      var html = '';
+      for (var i = 0; i < entries.length; i++) {
+        var entry = entries[i];
+        var title = entry.title.$t || '';
+        var url = '';
+        for (var j = 0; j < (entry.link || []).length; j++) {
+          if (entry.link[j].rel === 'alternate') { url = entry.link[j].href; break; }
+        }
+        if (!url) continue;
+
+        var snippet = '';
+        if (entry.summary && entry.summary.$t) {
+          snippet = entry.summary.$t.replace(/<[^>]+>/g, '').substring(0, 150) + '...';
+        }
+
+        var timestamp = '';
+        if (entry.published && entry.published.$t) {
+          var d = new Date(entry.published.$t);
+          timestamp = d.getFullYear() + '/' + (d.getMonth()+1) + '/' + d.getDate();
+        }
+
+        var thumbHtml = '';
+        if (entry.media$thumbnail && entry.media$thumbnail.url) {
+          thumbHtml = '<img class="card-img-top" src="'
+            + entry.media$thumbnail.url.replace(/s72-c/, 'w400-h300-c')
+            + '" alt="' + title + '" loading="lazy"/>';
+        } else {
+          thumbHtml = '<div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height:200px;"><span class="text-muted">\u6682\u65E0\u56FE\u7247</span></div>';
+        }
+
+        var labelsHtml = '';
+        if (entry.category) {
+          labelsHtml = '<div class="mb-2">';
+          var cats = Array.isArray(entry.category) ? entry.category : [entry.category];
+          for (var k = 0; k < cats.length; k++) {
+            labelsHtml += '<a class="badge bg-secondary text-decoration-none me-1 mb-1" href="/search/label/'
+              + encodeURIComponent(cats[k].term) + '">' + cats[k].term + '</a>';
+          }
+          labelsHtml += '</div>';
+        }
+
+        html += '<div><div class="card post-card">'
+          + thumbHtml
+          + '<div class="card-body d-flex flex-column">'
+          + '<h5 class="card-title"><a href="' + url + '">' + title + '</a></h5>'
+          + '<div class="text-muted small mb-2"><time>' + timestamp + '</time></div>'
+          + labelsHtml
+          + '<p class="card-text flex-grow-1">' + snippet + '</p>'
+          + '<a class="btn btn-outline-dark btn-sm mt-auto align-self-start" href="' + url + '">\u9605\u8BFB\u66F4\u591A</a>'
+          + '</div></div></div>';
+      }
+
+      grid.insertAdjacentHTML('beforeend', html);
+
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = '\u52A0\u8F7D\u66F4\u591A';
+      }
+    };
+    (function() {
+      var relatedDivs = document.querySelectorAll('[id^="neo-related-"]');
+      for (var d = 0; d < relatedDivs.length; d++) {
+        var postId = relatedDivs[d].id.replace('neo-related-', '');
+        var body = document.getElementById('neo-post-body-' + postId);
+        if (!body) continue;
+
+        // 获取当前文章标签
+        var labelLinks = document.querySelectorAll('.neo-post-labels a');
+        var labels = [];
+        for (var l = 0; l < labelLinks.length; l++) {
+          var href = labelLinks[l].getAttribute('href');
+          if (href) {
+            var match = href.match(/\/search\/label\/([^?&]+)/);
+            if (match) labels.push(decodeURIComponent(match[1]));
+          }
+        }
+        if (labels.length === 0) {
+          relatedDivs[d].innerHTML = '';
+          continue;
+        }
+
+        var label = labels[0];
+        var feedUrl = '/feeds/posts/summary/-/' + encodeURIComponent(label) +
+          '?alt=json-in-script&max-results=5&callback=neoRelatedCB' +
+          '&postId=' + postId;
+
+        // 动态加载脚本
+        var script = document.createElement('script');
+        script.src = feedUrl;
+        document.head.appendChild(script);
+      }
+    })();
+
+    // 相关文章回调
+    window.neoRelatedCB = function(data) {
+      var feed = data.feed;
+      if (!feed || !feed.entry) return;
+      var entries = feed.entry;
+
+      // 获取回调URL中的postId
+      var scripts = document.querySelectorAll('script[src*="neoRelatedCB"]');
+      var postId = '';
+      for (var s = 0; s < scripts.length; s++) {
+        var m = scripts[s].src.match(/postId=([^&]+)/);
+        if (m) { postId = m[1]; break; }
+      }
+      var container = document.getElementById('neo-related-' + postId);
+      if (!container) return;
+
+      var html = '';
+      var count = 0;
+      for (var i = 0; i < entries.length && count < 4; i++) {
+        var entry = entries[i];
+        var title = entry.title.$t || '';
+        var url = '';
+        for (var j = 0; j < (entry.link || []).length; j++) {
+          if (entry.link[j].rel === 'alternate') { url = entry.link[j].href; break; }
+        }
+        if (!url || url === window.location.href) continue;
+
+        var thumb = '';
+        if (entry.media$thumbnail && entry.media$thumbnail.url) {
+          thumb = '<img src="' + entry.media$thumbnail.url.replace(/s72-c/, 's200-c') + '" alt=""/>';
+        } else {
+          thumb = '<div class="neo-related-noimg">N/A</div>';
+        }
+
+        html += '<a href="' + url + '">' + thumb + '<span>' + title + '</span></a>';
+        count++;
+      }
+      container.innerHTML = html || '<span style="color:#6c757d;font-size:.85rem;">暂无相关文章</span>';
+    };
+
+    // ===== 导航当前页高亮 =====
+    (function() {
+      var nav = document.getElementById('neo-nav');
+      if (!nav) return;
+      var links = nav.querySelectorAll('a');
+      var current = window.location.href.replace(/\/$/, '');
+      for (var i = 0; i < links.length; i++) {
+        var href = links[i].href.replace(/\/$/, '');
+        if (href && current.indexOf(href) === 0) {
+          links[i].classList.add('active');
+          break;
+        }
+      }
+    })();
+
+    // ===== 文章目录 TOC =====
+    (function() {
+      var content = document.querySelector('.neo-post-content');
+      if (!content) return;
+      var headings = content.querySelectorAll('h2,h3,h4');
+      if (headings.length < 2) return;
+
+      var toc = document.createElement('div');
+      toc.className = 'neo-toc';
+      toc.innerHTML = '<div class="neo-toc-title">目录</div><ul class="neo-toc-list"></ul>';
+
+      var list = toc.querySelector('.neo-toc-list');
+      var minLevel = 10;
+      for (var i = 0; i < headings.length; i++) {
+        var level = parseInt(headings[i].tagName.charAt(1));
+        if (level < minLevel) minLevel = level;
+      }
+
+      var tocLinks = [];
+      for (var i = 0; i < headings.length; i++) {
+        var h = headings[i];
+        var tag = h.tagName;
+        var level = parseInt(tag.charAt(1));
+        var text = h.textContent || h.innerText;
+        var id = 'toc-' + i;
+        h.id = id;
+
+        var li = document.createElement('li');
+        var cls = level > minLevel ? ' neo-toc-' + tag.toLowerCase() : '';
+        var a = document.createElement('a');
+        a.href = '#' + id;
+        a.className = cls.trim();
+        a.textContent = text;
+        li.appendChild(a);
+        list.appendChild(li);
+        tocLinks.push(a);
+      }
+
+      // 折叠/展开
+      toc.querySelector('.neo-toc-title').addEventListener('click', function() {
+        toc.classList.toggle('collapsed');
+      });
+
+      // 插入到文章内容前
+      content.parentNode.insertBefore(toc, content);
+
+      // IntersectionObserver 滚动高亮
+      if ('IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            var id = entry.target.id;
+            var idx = parseInt(id.split('-')[1]);
+            if (entry.isIntersecting) {
+              for (var j = 0; j < tocLinks.length; j++) tocLinks[j].classList.remove('active-toc');
+              if (tocLinks[idx]) tocLinks[idx].classList.add('active-toc');
+            }
+          });
+        }, { rootMargin: '-80px 0px -70% 0px' });
+
+        for (var k = 0; k < headings.length; k++) {
+          observer.observe(headings[k]);
+        }
+      }
+    })();
+
+    // ===== 图片灯箱 =====
+    (function() {
+      var content = document.querySelector('.neo-post-content');
+      if (!content) return;
+
+      var lightbox = document.getElementById('neo-lightbox');
+      var lightboxImg = document.getElementById('neo-lightbox-img');
+      if (!lightbox || !lightboxImg) return;
+
+      function openLightbox(src) {
+        lightboxImg.src = src;
+        lightbox.classList.add('show');
+        document.body.style.overflow = 'hidden';
+      }
+
+      window.closeLightbox = function() {
+        lightbox.classList.remove('show');
+        document.body.style.overflow = '';
+      };
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeLightbox();
+      });
+
+      // 阻止图片上的点击冒泡到 lightbox 背景
+      lightboxImg.addEventListener('click', function(e) { e.stopPropagation(); });
+
+      var imgs = content.querySelectorAll('img');
+      for (var i = 0; i < imgs.length; i++) {
+        imgs[i].style.cursor = 'zoom-in';
+        imgs[i].addEventListener('click', function(e) {
+          e.preventDefault();
+          // 优先使用 data-src（懒加载会设置此属性保存真实URL）
+          openLightbox(this.dataset.src || this.src);
+        });
+      }
+    })();
+  // ===== 动态生成 Web App Manifest =====
+    (function() {
+      var manifest = {
+        name: document.querySelector('.neo-site-title a') ? document.querySelector('.neo-site-title a').textContent : document.title,
+        short_name: document.title.split(' - ')[0] || document.title,
+        start_url: '/',
+        display: 'standalone',
+        background_color: '#ffffff',
+        theme_color: '#000000',
+        icons: [{
+          src: '/favicon.ico',
+          sizes: '48x48',
+          type: 'image/x-icon'
+        }]
+      };
+      var blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+      var manifestLink = document.querySelector('link[rel="manifest"]');
+      if (manifestLink) {
+        manifestLink.href = URL.createObjectURL(blob);
+      }
+    })();
+  //]]>
+  </script>
+
+<script src='https://cdn.jsdelivr.net/gh/milio48/neo-util@7321f25518f7bf42e97933081cf0793ca651845c/neo-util.min.js' type='text/javascript'/>
+  <!-- Bootstrap 5 JS Bundle with Popper -->
+  <script defer='defer' src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js' type='text/javascript'/>
+
+  <!-- 代码高亮 -->
+  <link href='https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github.min.css' rel='stylesheet'/>
+  <script defer='defer' src='https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js' type='text/javascript'/>
+  <script type='text/javascript'>document.addEventListener('DOMContentLoaded',function(){if(typeof hljs!=='undefined'){hljs.highlightAll();}});</script>
+</body>
+</html>
